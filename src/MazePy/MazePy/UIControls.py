@@ -1,11 +1,6 @@
 import pygame
 from constants import *
 
-BUTTON_BORDER_SIZE = 2
-BUTTON_BORDER_COLOR = WHITE
-BUTTON_COLOR = BLACK
-BUTTON_LABEL_COLOR = WHITE
-
 class Button():
     __x = 0
     __y = 0
@@ -29,4 +24,7 @@ class Button():
         label_x = ((self.__width / 2) - (label_text.get_width() / 2) + self.__x)
         label_y = ((self.__height / 2) - (label_text.get_height() / 2) + self.__y)
         screen.blit(label_text, (int(label_x), int(label_y)))
+
+    def is_over(self, mouse_x, mouse_y):
+        return ((mouse_x > self.__x) and (mouse_x < (self.__x + self.__width)) and (mouse_y > self.__y) and (mouse_y < (self.__y + self.__height)))
         
