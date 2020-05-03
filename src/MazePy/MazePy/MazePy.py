@@ -57,7 +57,7 @@ def create_ui():
 def draw_grid():
     for c in range(COLS):
         for r in range(ROWS):
-            if(grid[c,r] == START and not start_cell_dragging):
+            if (grid[c,r] == START and not start_cell_dragging):
                 pygame.draw.rect(screen, START_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)        
             elif (grid[c,r] == END and not end_cell_dragging):
                 pygame.draw.rect(screen, END_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
@@ -66,18 +66,18 @@ def draw_grid():
             else: #(grid[c,r] == EMPTY):
                 pygame.draw.rect(screen, EMPTY_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
     
-    if(start_cell_dragging):
+    if (start_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         cell_x = int(mouse_x / CELL_WIDTH)
         cell_y = int(mouse_y / CELL_HEIGHT)                    
-        if((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
+        if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
             pygame.draw.rect(screen, START_CELL_COLOR, (cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
 
-    if(end_cell_dragging):
+    if (end_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         cell_x = int(mouse_x / CELL_WIDTH)
         cell_y = int(mouse_y / CELL_HEIGHT)                    
-        if((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
+        if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
             pygame.draw.rect(screen, END_CELL_COLOR, (cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
 
 ###############################################
@@ -127,8 +127,8 @@ def game_loop():
                     (mouse_x, mouse_y) = pygame.mouse.get_pos()
                     cell_x = int(mouse_x / CELL_WIDTH)
                     cell_y = int(mouse_y / CELL_HEIGHT)
-                    if((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
-                        if(not((cell_x == end_cell_col) and (cell_y == end_cell_row))):
+                    if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
+                        if (not((cell_x == end_cell_col) and (cell_y == end_cell_row))):
                             grid[start_cell_col, start_cell_row] = EMPTY
                             start_cell_col = cell_x
                             start_cell_row = cell_y
@@ -138,8 +138,8 @@ def game_loop():
                     (mouse_x, mouse_y) = pygame.mouse.get_pos()
                     cell_x = int(mouse_x / CELL_WIDTH)
                     cell_y = int(mouse_y / CELL_HEIGHT)
-                    if((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):                    
-                        if(not((cell_x == start_cell_col) and (cell_y == start_cell_row))):
+                    if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):                    
+                        if (not((cell_x == start_cell_col) and (cell_y == start_cell_row))):
                             grid[end_cell_col, end_cell_row] = EMPTY
                             end_cell_col = cell_x
                             end_cell_row = cell_y
