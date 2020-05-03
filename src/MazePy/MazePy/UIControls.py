@@ -26,5 +26,5 @@ class Button():
         screen.blit(label_text, (int(label_x), int(label_y)))
 
     def is_over(self, mouse_x, mouse_y):
-        return ((mouse_x > self.__x) and (mouse_x < (self.__x + self.__width)) and (mouse_y > self.__y) and (mouse_y < (self.__y + self.__height)))
+        return ((mouse_x >= self.__x) and (mouse_x < (self.__x + self.__width)) and (mouse_y >= self.__y) and (mouse_y < (self.__y + self.__height)))
         

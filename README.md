@@ -15,7 +15,7 @@ Once the maze has been fully generated, click the `SOLVE MAZE` button which will
 
 The program uses the following libraries:
 
-[PyGame](https://www.pygame.org/) Made with v1.9.6
+[PyGame](https://www.pygame.org/) (I used v1.9.6 at the time but will probably work with latest version)
 
 Hopefully [`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)) should do the trick...
 

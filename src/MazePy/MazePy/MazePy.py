@@ -2,6 +2,8 @@ import pygame # Tested with pygame v1.9.6
 from UIControls import Button
 from constants import *
 import numpy as np
+import random
+import time
 
 ###############################################
 # Globals
@@ -29,9 +31,11 @@ quit_button = Button((BUTTON_WIDTH * 3), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_
 ###############################################
 
 def initialise():
-    for c in range(COLS):
-        for r in range(ROWS):
-            grid[c, r] = EMPTY
+    # Set all cells to EMPTY by default
+    for col in range(COLS):
+        for row in range(ROWS):
+            grid[col, row] = EMPTY
+    # Set the Start and End cells
     grid[start_cell_col, start_cell_row] = START
     grid[end_cell_col, end_cell_row] = END
     print(grid)
@@ -55,28 +59,31 @@ def create_ui():
 ###############################################
 
 def draw_grid():
-    for c in range(COLS):
-        for r in range(ROWS):
-            if (grid[c,r] == START and not start_cell_dragging):
-                pygame.draw.rect(screen, START_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)        
-            elif (grid[c,r] == END and not end_cell_dragging):
-                pygame.draw.rect(screen, END_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
-            elif (grid[c,r] == WALL):
-                pygame.draw.rect(screen, WALL_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
-            else: #(grid[c,r] == EMPTY):
-                pygame.draw.rect(screen, EMPTY_CELL_COLOR, (c * CELL_WIDTH, r * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
+    for col in range(COLS):
+        for row in range(ROWS):
+            # Only set the Start cell if we are NOT dragging
+            if (grid[col, row] == START and not start_cell_dragging):
+                pygame.draw.rect(screen, START_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)        
+            # Only set the End cell if we are NOT dragging
+            elif (grid[col, row] == END and not end_cell_dragging):
+                pygame.draw.rect(screen, END_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
+            elif (grid[col, row] == WALL):
+                pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
+            else: #(grid[col, row] == EMPTY):
+                pygame.draw.rect(screen, EMPTY_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
     
     if (start_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         cell_x = int(mouse_x / CELL_WIDTH)
-        cell_y = int(mouse_y / CELL_HEIGHT)                    
+        cell_y = int(mouse_y / CELL_HEIGHT)
+        # Check the current mouse-pointer for the dragging motion is actually on the board
         if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
             pygame.draw.rect(screen, START_CELL_COLOR, (cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
-
-    if (end_cell_dragging):
+    elif (end_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         cell_x = int(mouse_x / CELL_WIDTH)
         cell_y = int(mouse_y / CELL_HEIGHT)                    
+        # Check the current mouse-pointer for the dragging motion is actually on the board
         if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
             pygame.draw.rect(screen, END_CELL_COLOR, (cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
 
@@ -106,10 +113,14 @@ def game_loop():
                 cell_y = int(mouse_y / CELL_HEIGHT)
                 if ((cell_x < COLS) and (cell_y < ROWS)):
                     if (grid[cell_x, cell_y] == START):
+                        # Set the flag for dragging the Start cell
                         start_cell_dragging = True
                     elif (grid[cell_x, cell_y] == END):
+                        # Set the flag for dragging the End cell
                         end_cell_dragging = True
                     elif (not (start_cell_dragging or end_cell_dragging)):
+                        # Otherwise, if we have clicked with mouse and we are not dragging anything, toggle
+                        # the current cell between EMPTY and WALL
                         if (grid[cell_x, cell_y] == WALL):
                             grid[cell_x, cell_y] = EMPTY
                         elif (grid[cell_x, cell_y] == EMPTY):
@@ -118,6 +129,7 @@ def game_loop():
                 if clear_button.is_over(mouse_x, mouse_y):
                     pass
                 elif create_maze_button.is_over(mouse_x, mouse_y):
+                    create_maze()
                     pass
                 elif solve_maze_button.is_over(mouse_x, mouse_y):
                     pass
@@ -127,23 +139,29 @@ def game_loop():
                     (mouse_x, mouse_y) = pygame.mouse.get_pos()
                     cell_x = int(mouse_x / CELL_WIDTH)
                     cell_y = int(mouse_y / CELL_HEIGHT)
+                    # Make sure we have not dragged the Start cell off the screen
                     if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
+                        # Also make sure we aren't trying to drag Start cell on top of End cell
                         if (not((cell_x == end_cell_col) and (cell_y == end_cell_row))):
                             grid[start_cell_col, start_cell_row] = EMPTY
                             start_cell_col = cell_x
                             start_cell_row = cell_y
                             grid[start_cell_col, start_cell_row] = START
+                    # Whatever happens, cancel the dragging flag
                     start_cell_dragging = False
                 elif end_cell_dragging:
                     (mouse_x, mouse_y) = pygame.mouse.get_pos()
                     cell_x = int(mouse_x / CELL_WIDTH)
                     cell_y = int(mouse_y / CELL_HEIGHT)
+                    # Make sure we have not dragged the End cell off the screen
                     if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):                    
+                        # Also make sure we aren't trying to drag End cell on top of Start cell
                         if (not((cell_x == start_cell_col) and (cell_y == start_cell_row))):
                             grid[end_cell_col, end_cell_row] = EMPTY
                             end_cell_col = cell_x
                             end_cell_row = cell_y
                             grid[end_cell_col, end_cell_row] = END
+                    # Whatever happens, cancel the dragging flag
                     end_cell_dragging = False
 
         draw_grid()
@@ -151,6 +169,63 @@ def game_loop():
         clock.tick(CLOCK_TICK)
     pygame.quit()
     #quit()
+
+def create_maze():
+
+    def divide(x1, y1, x2, y2):
+        print(f"divide({x1}, {y1}, {x2}, {y2})")
+        vertical = x1
+        if ((x2 - x1) > 3):
+            vertical = int(((x2 - x1) / 2) + x1) # random.randint(x1 + 1, x2 - 1)
+            for row in range(y1, y2):
+                pygame.draw.rect(screen, WALL_CELL_COLOR, (vertical * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+                grid[vertical, row] = WALL
+
+        horizontal = y1
+        if ((y2 - y1) > 3):                
+            horizontal = int(((y2 - y1) / 2) + y1) # random.randint(y1 + 1, y2 - 1)
+            for col in range(x1, x2):
+                pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, horizontal * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+                grid[col, horizontal] = WALL
+
+        # top-left
+        new_x1 = x1 + 1
+        new_y1 = y1 + 1
+        new_x2 = vertical - 1
+        new_y2 = horizontal - 1
+        if (((new_x2 - new_x1) > 3) and ((new_y2 - new_y1) > 3)):
+            divide(new_x1, new_y1, new_x2, new_y2)
+        
+        # top-right
+        new_x1 = vertical + 1
+        new_y1 = y1 + 1
+        new_x2 = x2 - 1
+        new_y2 = horizontal - 1
+        if (((new_x2 - new_x1) > 3) and ((new_y2 - new_y1) > 3)):
+            divide(new_x1, new_y1, new_x2, new_y2)
+        
+        # bottom-left
+        new_x1 = x1 + 1
+        new_y1 = horizontal + 1
+        new_x2 = vertical - 1
+        new_y2 = y2 - 1
+        if (((new_x2 - new_x1) > 3) and ((new_y2 - new_y1) > 3)):
+            divide(new_x1, new_y1, new_x2, new_y2)
+        
+        # bottom-right
+        new_x1 = vertical + 1
+        new_y1 = horizontal + 1
+        new_x2 = x2 - 1
+        new_y2 = y2 - 1
+        if (((new_x2 - new_x1) > 3) and ((new_y2 - new_y1) > 3)):
+            divide(new_x1, new_y1, new_x2, new_y2)
+
+        time.sleep(0.01)
+        pygame.display.update()
+
+
+    divide(0, 0, COLS, ROWS)
+
 
 ###############################################
 # main()
