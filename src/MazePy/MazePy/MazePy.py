@@ -104,11 +104,16 @@ def game_loop():
                 (mouse_x, mouse_y) = pygame.mouse.get_pos()
                 cell_x = int(mouse_x / CELL_WIDTH)
                 cell_y = int(mouse_y / CELL_HEIGHT)
-                if((cell_x < COLS) and (cell_y < ROWS)):
-                    if(grid[cell_x, cell_y] == START):
+                if ((cell_x < COLS) and (cell_y < ROWS)):
+                    if (grid[cell_x, cell_y] == START):
                         start_cell_dragging = True
-                    elif(grid[cell_x, cell_y] == END):
+                    elif (grid[cell_x, cell_y] == END):
                         end_cell_dragging = True
+                    elif (not (start_cell_dragging or end_cell_dragging)):
+                        if (grid[cell_x, cell_y] == WALL):
+                            grid[cell_x, cell_y] = EMPTY
+                        elif (grid[cell_x, cell_y] == EMPTY):
+                            grid[cell_x, cell_y] = WALL
             elif event.type == pygame.MOUSEBUTTONUP:
                 if clear_button.is_over(mouse_x, mouse_y):
                     pass
