@@ -1,3 +1,10 @@
+###############################################
+#
+# TODOs
+# - Move pygame.draw.rect()s to DrawCell
+#
+###############################################
+
 import pygame # Tested with pygame v1.9.6
 from UIControls import Button
 from constants import *
@@ -176,10 +183,10 @@ def create_maze():
     def divide(x1, y1, x2, y2):
         print(f"divide({x1}, {y1}, {x2}, {y2})")
 
-        diff0 = 1
+        diff = 2
 
         vertical = x2
-        if ((x2 - x1) >= diff0):
+        if ((x2 - x1) > diff):
             vertical = int(((x2 - x1) / 2) + x1)
             #vertical = random.randint(x1 + 1, x2 - 1)
             for row in range(y1, y2):
@@ -187,21 +194,19 @@ def create_maze():
                 grid[vertical, row] = WALL
 
         horizontal = y2
-        if ((y2 - y1) >= diff0):                
+        if ((y2 - y1) > diff):                
             horizontal = int(((y2 - y1) / 2) + y1)
             #horizontal = random.randint(y1 + 1, y2 - 1)
             for col in range(x1, x2):
                 pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, horizontal * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
                 grid[col, horizontal] = WALL
-
-        diff2 = 2
-
+        
         # top-left
         new_x1 = x1
         new_y1 = y1
         new_x2 = vertical
         new_y2 = horizontal
-        if (((new_x2 - new_x1) > diff2) and ((new_y2 - new_y1) > diff2)):
+        if (((new_x2 - new_x1) > diff) or ((new_y2 - new_y1) > diff)):
             divide(new_x1, new_y1, new_x2, new_y2)
                 
         # top-right
@@ -209,7 +214,7 @@ def create_maze():
         new_y1 = y1
         new_x2 = x2
         new_y2 = horizontal
-        if (((new_x2 - new_x1) > diff2) and ((new_y2 - new_y1) > diff2)):
+        if (((new_x2 - new_x1) > diff) or ((new_y2 - new_y1) > diff)):
             divide(new_x1, new_y1, new_x2, new_y2)
         
         # bottom-left
@@ -217,7 +222,7 @@ def create_maze():
         new_y1 = horizontal + 1
         new_x2 = vertical
         new_y2 = y2
-        if (((new_x2 - new_x1) > diff2) and ((new_y2 - new_y1) > diff2)):
+        if (((new_x2 - new_x1) > diff) or ((new_y2 - new_y1) > diff)):
             divide(new_x1, new_y1, new_x2, new_y2)
         
         # bottom-right
@@ -225,10 +230,10 @@ def create_maze():
         new_y1 = horizontal + 1
         new_x2 = x2
         new_y2 = y2
-        if (((new_x2 - new_x1) > diff2) and ((new_y2 - new_y1) > diff2)):
+        if (((new_x2 - new_x1) > diff) or ((new_y2 - new_y1) > diff)):
             divide(new_x1, new_y1, new_x2, new_y2)
 
-        #time.sleep(0.01)
+        #time.sleep(0.1)
         pygame.display.update()
 
 
