@@ -136,7 +136,7 @@ def game_loop():
                             grid[cell_x, cell_y] = WALL
             elif event.type == pygame.MOUSEBUTTONUP:
                 if clear_button.is_over(mouse_x, mouse_y):
-                    pass
+                    initialise()
                 elif create_maze_button.is_over(mouse_x, mouse_y):
                     create_maze()
                     pass
@@ -200,6 +200,8 @@ def create_maze():
                 pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, horizontal * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
                 grid[col, horizontal] = WALL
         
+
+
         # top-left
         new_x1 = x1
         new_y1 = y1
