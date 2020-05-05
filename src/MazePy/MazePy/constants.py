@@ -1,12 +1,19 @@
 # UI Component sizes
 
-ROWS = 80
-COLS = 150
-CELL_WIDTH = 10
+# Large maze
+ROWS = 150
+COLS = ROWS
+CELL_WIDTH = 5
 
-#ROWS = 16
-#COLS = 16
-#CELL_WIDTH = 50
+# Medium maze
+#ROWS = 80
+#COLS = ROWS
+#CELL_WIDTH = 10
+
+# Small maze
+#ROWS = 7
+#COLS = 7
+#CELL_WIDTH = 100
 
 CELL_HEIGHT = CELL_WIDTH
 BUTTON_STRIP_HEIGHT = 50

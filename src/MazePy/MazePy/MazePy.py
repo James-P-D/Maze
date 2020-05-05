@@ -2,6 +2,7 @@
 #
 # TODOs
 # - Move pygame.draw.rect()s to DrawCell
+# - Variable renaming (newx eurgh!)
 #
 ###############################################
 
@@ -47,7 +48,7 @@ def initialise():
     # Set the Start and End cells
     grid[start_cell_col, start_cell_row] = START
     grid[end_cell_col, end_cell_row] = END
-    print(grid)
+    #print(grid)
 
 ###############################################
 # create_ui()
@@ -179,28 +180,91 @@ def game_loop():
     pygame.quit()
     #quit()
 
+
+###############################################
+# create_maze()
+###############################################
+
 def create_maze():
+
+    ###############################################
+    ## make_holes()
+    ################################################
+
+    def make_holes(new_x1, new_y1, new_x2, new_y2, vertical, horizontal):
+        #print(f"\tmake_holes({new_x1}, {new_y1}, {new_x2}, {new_y2}, {vertical}, {horizontal})")        
+
+        all_lists = []
+
+        list1 = []
+        for y in range(new_y1, horizontal):
+            #print(f"\tChecking ({vertical}, {y})")
+            if (has_horizontal_empty(vertical, y)):
+                list1.append((vertical, y))
+        if (len(list1) > 0):
+            all_lists.append(list1)
+        #print("---")
+        
+        list2 = []
+        for y in range(horizontal + 1, new_y2):
+            #print(f"\tChecking ({vertical}, {y})")
+            if (has_horizontal_empty(vertical, y)):
+                list2.append((vertical, y))
+        if (len(list2) > 0):
+            all_lists.append(list2)
+        #print("---")
+        
+        list3 = []
+        for x in range(new_x1, vertical):
+            #print(f"\tChecking ({x}, {horizontal})")
+            if (has_vertical_empty(x, horizontal)):
+                list3.append((x, horizontal))
+        if (len(list3) > 0):
+            all_lists.append(list3)
+        
+        #print("---")
+        
+        list4 = []
+        for x in range(vertical + 1, new_x2):
+            #print(f"\tChecking ({x}, {horizontal})")
+            if (has_vertical_empty(x, horizontal)):
+                list4.append((x, horizontal))
+        if (len(list4) > 0):
+            all_lists.append(list4)
+
+        #print(all_lists)
+        if (len(all_lists) == 4):
+            item_index_to_remove = random.randint(0, 3)
+            del (all_lists[item_index_to_remove])
+        #print(all_lists)
+        
+        for sub_list in all_lists:
+            (hole_x, hole_y) = sub_list[random.randint(0, len(sub_list) - 1)]
+            pygame.draw.rect(screen, EMPTY_CELL_COLOR, (hole_x * CELL_WIDTH, hole_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+            grid[hole_x, hole_y] = EMPTY
+
+    ###############################################
+    ## divide()
+    ################################################
 
     def divide(x1, y1, x2, y2):
         #print(f"divide({x1}, {y1}, {x2}, {y2})")
 
         vertical = x2
         if ((x2 - x1) > 2):
-            #vertical = int(((x2 - x1) / 2) + x1)
-            vertical = random.randint(x1 + 1, x2 - 2)
+            vertical = int(((x2 - x1) / 2) + x1)
+            #vertical = random.randint(x1 + 1, x2 - 2)
             for row in range(y1, y2):
                 pygame.draw.rect(screen, WALL_CELL_COLOR, (vertical * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
                 grid[vertical, row] = WALL
 
         horizontal = y2
         if ((y2 - y1) > 2):                
-            #horizontal = int(((y2 - y1) / 2) + y1)
-            horizontal = random.randint(y1 + 1, y2 - 2)
+            horizontal = int(((y2 - y1) / 2) + y1)
+            #horizontal = random.randint(y1 + 1, y2 - 2)
             for col in range(x1, x2):
                 pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, horizontal * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
                 grid[col, horizontal] = WALL
-        
-
 
         # top-left
         new_x1 = x1
@@ -208,7 +272,8 @@ def create_maze():
         new_x2 = vertical
         new_y2 = horizontal
         if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            divide(new_x1, new_y1, new_x2, new_y2)
+            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
+            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
                 
         # top-right
         new_x1 = vertical + 1
@@ -216,29 +281,62 @@ def create_maze():
         new_x2 = x2
         new_y2 = horizontal
         if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            divide(new_x1, new_y1, new_x2, new_y2)
-        
+            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
+            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+            
         # bottom-left
         new_x1 = x1
         new_y1 = horizontal + 1
         new_x2 = vertical
         new_y2 = y2
         if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            divide(new_x1, new_y1, new_x2, new_y2)
-        
+            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
+            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+            
         # bottom-right
         new_x1 = vertical + 1
         new_y1 = horizontal + 1
         new_x2 = x2
         new_y2 = y2
         if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            divide(new_x1, new_y1, new_x2, new_y2)
-
+            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
+            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+            
         #time.sleep(0.1)
         pygame.display.update()
 
-    divide(0, 0, COLS, ROWS)
+        return (vertical, horizontal)
 
+    (new_vertical, new_horizontal) = divide(0, 0, COLS, ROWS)
+    make_holes(0, 0, COLS, ROWS, new_vertical, new_horizontal)
+    grid[start_cell_col, start_cell_row] = START
+    grid[end_cell_col, end_cell_row] = END
+
+###############################################
+# MISC FUNCTIONS
+###############################################
+
+def has_horizontal_neighbours(x, y, cell_types):
+    left_x = x - 1
+    right_x = x + 1
+    if (left_x >= 0) and (right_x < COLS):
+        return (grid[left_x, y] in cell_types) and (grid[right_x, y] in cell_types)
+
+    return False
+
+def has_vertical_neighbours(x, y, cell_types):
+    above_y = y - 1
+    below_y = y + 1
+    if (above_y >= 0) and (below_y < ROWS):
+        return (grid[x, above_y] in cell_types) and (grid[x, below_y] in cell_types)
+
+    return False
+
+def has_horizontal_empty(x, y):
+    return has_horizontal_neighbours(x, y, [EMPTY, START, END])
+
+def has_vertical_empty(x, y):
+    return has_vertical_neighbours(x, y, [EMPTY, START, END])
 
 ###############################################
 # main()
