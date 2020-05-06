@@ -1,9 +1,9 @@
 # UI Component sizes
 
 # Large maze
-ROWS = 150
-COLS = ROWS
-CELL_WIDTH = 5
+#ROWS = 150
+#COLS = ROWS
+#CELL_WIDTH = 6
 
 # Medium maze
 #ROWS = 80
@@ -11,9 +11,9 @@ CELL_WIDTH = 5
 #CELL_WIDTH = 10
 
 # Small maze
-#ROWS = 7
-#COLS = 7
-#CELL_WIDTH = 100
+ROWS = 7
+COLS = 7
+CELL_WIDTH = 100
 
 CELL_HEIGHT = CELL_WIDTH
 BUTTON_STRIP_HEIGHT = 50
@@ -46,11 +46,11 @@ QUIT_BUTTON_LABEL = "QUIT"
 
 EMPTY = 0
 WALL = 1
-START = 2  # TODO: Do we need these?
-END = 3    # TODO: Do we need these?
+INITIAL = 2  # TODO: Do we need these?
+TERMINAL = 3    # TODO: Do we need these?
 
-START_CELL_COLOR = GREEN
-END_CELL_COLOR = RED
+INITIAL_CELL_COLOR = GREEN
+TERMINAL_CELL_COLOR = RED
 EMPTY_CELL_COLOR = WHITE
 WALL_CELL_COLOR = BLACK
 
