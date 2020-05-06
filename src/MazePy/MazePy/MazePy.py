@@ -1,8 +1,9 @@
 ###############################################
 #
 # TODOs
-# - Move pygame.draw.rect()s to DrawCell
 # - Variable renaming (newx eurgh!)
+# - Rename START/END to INITIAL/TERMINAL
+#
 #
 ###############################################
 
@@ -73,14 +74,14 @@ def draw_grid():
         for row in range(ROWS):
             # Only set the Start cell if we are NOT dragging
             if (grid[col, row] == START and not start_cell_dragging):
-                pygame.draw.rect(screen, START_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)        
+                draw_cell(START_CELL_COLOR, col * CELL_WIDTH, row * CELL_HEIGHT)        
             # Only set the End cell if we are NOT dragging
             elif (grid[col, row] == END and not end_cell_dragging):
-                pygame.draw.rect(screen, END_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
+                draw_cell(END_CELL_COLOR, col * CELL_WIDTH, row * CELL_HEIGHT)        
             elif (grid[col, row] == WALL):
-                pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
+                draw_cell(WALL_CELL_COLOR, col * CELL_WIDTH, row * CELL_HEIGHT)        
             else: #(grid[col, row] == EMPTY):
-                pygame.draw.rect(screen, EMPTY_CELL_COLOR, (col * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)            
+                draw_cell(EMPTY_CELL_COLOR, col * CELL_WIDTH, row * CELL_HEIGHT)        
     
     if (start_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
@@ -88,14 +89,14 @@ def draw_grid():
         cell_y = int(mouse_y / CELL_HEIGHT)
         # Check the current mouse-pointer for the dragging motion is actually on the board
         if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
-            pygame.draw.rect(screen, START_CELL_COLOR, (cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+            draw_cell(START_CELL_COLOR, cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT)
     elif (end_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         cell_x = int(mouse_x / CELL_WIDTH)
         cell_y = int(mouse_y / CELL_HEIGHT)                    
         # Check the current mouse-pointer for the dragging motion is actually on the board
         if ((cell_x >= 0) and (cell_x < COLS) and (cell_y >= 0) and (cell_y < ROWS)):
-            pygame.draw.rect(screen, END_CELL_COLOR, (cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+            draw_cell(END_CELL_COLOR, cell_x * CELL_WIDTH, cell_y * CELL_HEIGHT)
 
 ###############################################
 # game_loop()
@@ -142,7 +143,7 @@ def game_loop():
                     create_maze()
                     pass
                 elif solve_maze_button.is_over(mouse_x, mouse_y):
-                    pass
+                    solve_maze()
                 elif quit_button.is_over(mouse_x, mouse_y):
                     game_exit = True
                 elif start_cell_dragging:
@@ -240,7 +241,7 @@ def create_maze():
         
         for sub_list in all_lists:
             (hole_x, hole_y) = sub_list[random.randint(0, len(sub_list) - 1)]
-            pygame.draw.rect(screen, EMPTY_CELL_COLOR, (hole_x * CELL_WIDTH, hole_y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+            draw_cell(EMPTY_CELL_COLOR, hole_x * CELL_WIDTH, hole_y * CELL_HEIGHT)
             grid[hole_x, hole_y] = EMPTY
 
     ###############################################
@@ -255,7 +256,7 @@ def create_maze():
             vertical = int(((x2 - x1) / 2) + x1)
             #vertical = random.randint(x1 + 1, x2 - 2)
             for row in range(y1, y2):
-                pygame.draw.rect(screen, WALL_CELL_COLOR, (vertical * CELL_WIDTH, row * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+                draw_cell(WALL_CELL_COLOR, vertical * CELL_WIDTH, row * CELL_HEIGHT)
                 grid[vertical, row] = WALL
 
         horizontal = y2
@@ -263,7 +264,7 @@ def create_maze():
             horizontal = int(((y2 - y1) / 2) + y1)
             #horizontal = random.randint(y1 + 1, y2 - 2)
             for col in range(x1, x2):
-                pygame.draw.rect(screen, WALL_CELL_COLOR, (col * CELL_WIDTH, horizontal * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT), 0)
+                draw_cell(WALL_CELL_COLOR, col * CELL_WIDTH, horizontal * CELL_HEIGHT)
                 grid[col, horizontal] = WALL
 
         # top-left
@@ -337,6 +338,20 @@ def has_horizontal_empty(x, y):
 
 def has_vertical_empty(x, y):
     return has_vertical_neighbours(x, y, [EMPTY, START, END])
+
+###############################################
+# solve_maze()
+###############################################
+
+def solve_maze():
+    pass
+
+###############################################
+# draw_cell()
+###############################################
+
+def draw_cell(color, x, y):
+    pygame.draw.rect(screen, color, (x, y, CELL_WIDTH, CELL_HEIGHT), 0)        
 
 ###############################################
 # main()
