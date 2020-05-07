@@ -2,7 +2,6 @@
 #
 # TODOs
 # - Variable renaming (newx eurgh!)
-# - Update draw_cell() so that it actually takes col and row as parameters
 # - Check whether we are using X and Y when we should be using Col and Row
 #
 ###############################################
@@ -37,8 +36,7 @@ clear_button = Button((BUTTON_WIDTH * 0), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON
 create_button = Button((BUTTON_WIDTH * 1), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, CREATE_BUTTON_LABEL)
 dfs_button = Button((BUTTON_WIDTH * 2), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, DFS_BUTTON_LABEL)
 bfs_button = Button((BUTTON_WIDTH * 3), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, BFS_BUTTON_LABEL)
-dijkstra_button = Button((BUTTON_WIDTH * 4), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, DIJKSTRA_BUTTON_LABEL)
-quit_button = Button((BUTTON_WIDTH * 5), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, QUIT_BUTTON_LABEL)
+quit_button = Button((BUTTON_WIDTH * 4), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, QUIT_BUTTON_LABEL)
 
 ###############################################
 # initialise()
@@ -66,7 +64,6 @@ def create_ui():
     create_button.draw(screen)
     dfs_button.draw(screen)
     bfs_button.draw(screen)
-    dijkstra_button.draw(screen)
     quit_button.draw(screen)
     
     draw_grid()
@@ -151,13 +148,10 @@ def game_loop():
                     initialise()
                 elif create_button.is_over(mouse_x, mouse_y):
                     create_maze()
-                    pass
                 elif dfs_button.is_over(mouse_x, mouse_y):
                     depth_first_search()
                 elif bfs_button.is_over(mouse_x, mouse_y):
                     breadth_first_search()
-                elif dijkstra_button.is_over(mouse_x, mouse_y):
-                    dijkstra_search()
                 elif quit_button.is_over(mouse_x, mouse_y):
                     game_exit = True
                 elif initial_cell_dragging:
@@ -206,52 +200,42 @@ def create_maze():
     ## make_holes()
     ################################################
 
-    def make_holes(new_x1, new_y1, new_x2, new_y2, vertical, horizontal):
-        #print(f"\tmake_holes({new_x1}, {new_y1}, {new_x2}, {new_y2}, {vertical}, {horizontal})")        
+    def make_holes(col1, row1, col2, row2, vertical, horizontal):
+        #print(f"\tmake_holes({col1}, {row1}, {col2}, {row2}, {vertical}, {horizontal})")        
 
         all_lists = []
 
         list = []
-        for y in range(new_y1, horizontal):
-            #print(f"\tChecking ({vertical}, {y})")
-            if (has_horizontal_empty(vertical, y)):
-                list.append((vertical, y))
-        if (len(list) > 0):
-            all_lists.append(list)
-        #print("---")
-        
-        list = []
-        for y in range(horizontal + 1, new_y2):
-            #print(f"\tChecking ({vertical}, {y})")
-            if (has_horizontal_empty(vertical, y)):
-                list.append((vertical, y))
-        if (len(list) > 0):
-            all_lists.append(list)
-        #print("---")
-        
-        list = []
-        for x in range(new_x1, vertical):
-            #print(f"\tChecking ({x}, {horizontal})")
-            if (has_vertical_empty(x, horizontal)):
-                list.append((x, horizontal))
+        for row in range(row1, horizontal):
+            if (has_horizontal_empty(vertical, row)):
+                list.append((vertical, row))
         if (len(list) > 0):
             all_lists.append(list)
         
-        #print("---")
+        list = []
+        for row in range(horizontal + 1, row2):
+            if (has_horizontal_empty(vertical, row)):
+                list.append((vertical, row))
+        if (len(list) > 0):
+            all_lists.append(list)
         
         list = []
-        for x in range(vertical + 1, new_x2):
-            #print(f"\tChecking ({x}, {horizontal})")
-            if (has_vertical_empty(x, horizontal)):
-                list.append((x, horizontal))
+        for col in range(col1, vertical):
+            if (has_vertical_empty(col, horizontal)):
+                list.append((col, horizontal))
+        if (len(list) > 0):
+            all_lists.append(list)
+                
+        list = []
+        for col in range(vertical + 1, col2):
+            if (has_vertical_empty(col, horizontal)):
+                list.append((col, horizontal))
         if (len(list) > 0):
             all_lists.append(list)
 
-        #print(all_lists)
         if (len(all_lists) == 4):
             item_index_to_remove = random.randint(0, 3)
             del (all_lists[item_index_to_remove])
-        #print(all_lists)
         
         for sub_list in all_lists:
             (hole_col, hole_row) = sub_list[random.randint(0, len(sub_list) - 1)]
@@ -262,60 +246,60 @@ def create_maze():
     ## divide()
     ################################################
 
-    def divide(x1, y1, x2, y2):
-        #print(f"divide({x1}, {y1}, {x2}, {y2})")
+    def divide(col1, row1, col2, row2):
+        #print(f"divide({col1}, {row1}, {col2}, {row2})")
 
-        vertical = x2
-        if ((x2 - x1) > 2):
-            vertical = int(((x2 - x1) / 2) + x1)
-            #vertical = random.randint(x1 + 1, x2 - 2)
-            for row in range(y1, y2):
+        vertical = col2
+        if ((col2 - col1) > 2):
+            vertical = int(((col2 - col1) / 2) + col1)
+            
+            for row in range(row1, row2):
                 draw_cell(WALL_CELL_COLOR, vertical, row)
                 grid[vertical, row] = WALL
 
-        horizontal = y2
-        if ((y2 - y1) > 2):                
-            horizontal = int(((y2 - y1) / 2) + y1)
-            #horizontal = random.randint(y1 + 1, y2 - 2)
-            for col in range(x1, x2):
+        horizontal = row2
+        if ((row2 - row1) > 2):                
+            horizontal = int(((row2 - row1) / 2) + row1)
+            
+            for col in range(col1, col2):
                 draw_cell(WALL_CELL_COLOR, col, horizontal)
                 grid[col, horizontal] = WALL
 
         # top-left
-        new_x1 = x1
-        new_y1 = y1
-        new_x2 = vertical
-        new_y2 = horizontal
-        if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
-            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+        new_col1 = col1
+        new_row1 = row1
+        new_col2 = vertical
+        new_row2 = horizontal
+        if (((new_col2 - new_col1) > 2) or ((new_row2 - new_row1) > 2)):
+            (new_vertical, new_horizontal) = divide(new_col1, new_row1, new_col2, new_row2)
+            make_holes(new_col1, new_row1, new_col2, new_row2, new_vertical, new_horizontal)
                 
         # top-right
-        new_x1 = vertical + 1
-        new_y1 = y1
-        new_x2 = x2
-        new_y2 = horizontal
-        if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
-            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+        new_col1 = vertical + 1
+        new_row1 = row1
+        new_col2 = col2
+        new_row2 = horizontal
+        if (((new_col2 - new_col1) > 2) or ((new_row2 - new_row1) > 2)):
+            (new_vertical, new_horizontal) = divide(new_col1, new_row1, new_col2, new_row2)
+            make_holes(new_col1, new_row1, new_col2, new_row2, new_vertical, new_horizontal)
             
         # bottom-left
-        new_x1 = x1
-        new_y1 = horizontal + 1
-        new_x2 = vertical
-        new_y2 = y2
-        if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
-            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+        new_col1 = col1
+        new_row1 = horizontal + 1
+        new_col2 = vertical
+        new_row2 = row2
+        if (((new_col2 - new_col1) > 2) or ((new_row2 - new_row1) > 2)):
+            (new_vertical, new_horizontal) = divide(new_col1, new_row1, new_col2, new_row2)
+            make_holes(new_col1, new_row1, new_col2, new_row2, new_vertical, new_horizontal)
             
         # bottom-right
-        new_x1 = vertical + 1
-        new_y1 = horizontal + 1
-        new_x2 = x2
-        new_y2 = y2
-        if (((new_x2 - new_x1) > 2) or ((new_y2 - new_y1) > 2)):
-            (new_vertical, new_horizontal) = divide(new_x1, new_y1, new_x2, new_y2)
-            make_holes(new_x1, new_y1, new_x2, new_y2, new_vertical, new_horizontal)
+        new_col1 = vertical + 1
+        new_row1 = horizontal + 1
+        new_col2 = col2
+        new_row2 = row2
+        if (((new_col2 - new_col1) > 2) or ((new_row2 - new_row1) > 2)):
+            (new_vertical, new_horizontal) = divide(new_col1, new_row1, new_col2, new_row2)
+            make_holes(new_col1, new_row1, new_col2, new_row2, new_vertical, new_horizontal)
             
         time.sleep(SMALL_SLEEP)
         pygame.display.update()
@@ -334,27 +318,27 @@ def create_maze():
 # MISC FUNCTIONS
 ###############################################
 
-def has_horizontal_neighbours(x, y, cell_types):
-    left_x = x - 1
-    right_x = x + 1
-    if (left_x >= 0) and (right_x < COLS):
-        return (grid[left_x, y] in cell_types) and (grid[right_x, y] in cell_types)
+def has_horizontal_neighbours(col, row, cell_types):
+    left_col = col - 1
+    right_col = col + 1
+    if (left_col >= 0) and (right_col < COLS):
+        return (grid[left_col, row] in cell_types) and (grid[right_col, row] in cell_types)
 
     return False
 
-def has_vertical_neighbours(x, y, cell_types):
-    above_y = y - 1
-    below_y = y + 1
-    if (above_y >= 0) and (below_y < ROWS):
-        return (grid[x, above_y] in cell_types) and (grid[x, below_y] in cell_types)
+def has_vertical_neighbours(col, row, cell_types):
+    above_row = row - 1
+    below_row = row + 1
+    if (above_row >= 0) and (below_row < ROWS):
+        return (grid[col, above_row] in cell_types) and (grid[col, below_row] in cell_types)
 
     return False
 
-def has_horizontal_empty(x, y):
-    return has_horizontal_neighbours(x, y, [EMPTY, INITIAL, TERMINAL])
+def has_horizontal_empty(col, row):
+    return has_horizontal_neighbours(col, row, [EMPTY, INITIAL, TERMINAL])
 
-def has_vertical_empty(x, y):
-    return has_vertical_neighbours(x, y, [EMPTY, INITIAL, TERMINAL])
+def has_vertical_empty(col, row):
+    return has_vertical_neighbours(col, row, [EMPTY, INITIAL, TERMINAL])
 
 ###############################################
 # reset_maze()
@@ -367,6 +351,10 @@ def reset_maze():
         for row in range(ROWS):
             grid[col, row] = EMPTY if ((grid[col, row] == VISITED) or (grid[col, row] == PATH)) else grid[col, row]
 
+###############################################
+# valid_cell()
+###############################################
+
 def valid_cell(col, row):
     return ((col >= 0) and (row >= 0) and (col < COLS) and (row < ROWS ))
 
@@ -377,6 +365,20 @@ def valid_cell(col, row):
 def depth_first_search():
     reset_maze()
     draw_grid()
+
+    ###############################################
+    # check()
+    ###############################################
+
+    def check(col, row):
+        if (valid_cell(col, row)):
+            if (search(col, row)):
+                return True
+        return False
+
+    ###############################################
+    # search()
+    ###############################################
 
     def search(col, row):
         #print(f"search({col}, {row})")
@@ -391,52 +393,33 @@ def depth_first_search():
             grid[col, row] = PATH
             draw_cell(PATH_CELL_COLOR, col, row)
 
-            next_col = col - 1
-            next_row = row
-            if (valid_cell(next_col, next_row)):
-                if (search(next_col, next_row)):
-                    return True
-            next_col = col + 1
-            row = row
-            if (valid_cell(next_col, next_row)):
-                if (search(next_col, next_row)):
-                    return True
-            next_col = col
-            next_row = row - 1
-            if (valid_cell(next_col, next_row)):
-                if (search(next_col, next_row)):
-                    return True
-            next_col = col
-            next_row = row + 1
-            if (valid_cell(next_col, next_row)):
-                if (search(next_col, next_row)):
-                    return True
+            if (check(col - 1, row)):
+                return True
+
+            if (check(col + 1, row)):
+                return True
+
+            if (check(col, row - 1)):
+                return True
+
+            if (check(col, row + 1)):
+                return True
             
             grid[col, row] = VISITED
             draw_cell(VISITED_CELL_COLOR, col, row)
             return False
 
+    if (check(initial_cell_col - 1, initial_cell_row)):
+        return
 
-    next_col = initial_cell_col - 1
-    next_row = initial_cell_row
-    if (valid_cell(next_col, next_row)):
-        if (search(next_col, next_row)):
-            return
-    next_col = initial_cell_col + 1
-    next_row = initial_cell_row
-    if (valid_cell(next_col, next_row)):
-        if (search(next_col, next_row)):
-            return
-    next_col = initial_cell_col
-    next_row = initial_cell_row - 1
-    if (valid_cell(next_col, next_row)):
-        if (search(next_col, next_row)):
-            return
-    next_col = initial_cell_col
-    next_row = initial_cell_row + 1
-    if (valid_cell(next_col, next_row)):
-        if (search(next_col, next_row)):
-            return
+    if (check(initial_cell_col + 1, initial_cell_row)):
+        return
+
+    if (check(initial_cell_col, initial_cell_row - 1)):
+        return
+
+    if (check(initial_cell_col, initial_cell_row + 1)):
+        return
     
 ###############################################
 # breadth_first_search()
@@ -446,7 +429,15 @@ def breadth_first_search():
     reset_maze()
     draw_grid()
 
+    ###############################################
+    # search()
+    ###############################################
+
     def search(nodes):
+
+        ###############################################
+        # search()
+        ###############################################
 
         def check(next_col, next_row, sub_nodes):
             if (valid_cell(next_col, next_row)):
@@ -459,7 +450,6 @@ def breadth_first_search():
                             draw_cell(PATH_CELL_COLOR, backtrack_node.get_col(), backtrack_node.get_row())
                             pygame.display.update()                        
                         backtrack_node = backtrack_node.get_parent()
-                        
 
                     return True
                 elif ((grid[next_col, next_row] != WALL) and (grid[next_col, next_row] != VISITED) and (grid[next_col, next_row] != INITIAL)):
@@ -477,22 +467,18 @@ def breadth_first_search():
 
         for node in nodes:
             #print(f"\tNode at ({node.get_col()}, {node.get_row()})")
-            next_col = node.get_col() - 1
-            next_row = node.get_row()
-            check(next_col, next_row, sub_nodes)
+            if (check(node.get_col() - 1, node.get_row(), sub_nodes)):
+                return
 
-            next_col = node.get_col() + 1
-            next_row = node.get_row()
-            check(next_col, next_row, sub_nodes)
+            if (check(node.get_col() + 1, node.get_row(), sub_nodes)):
+                return
 
-            next_col = node.get_col()
-            next_row = node.get_row() - 1
-            check(next_col, next_row, sub_nodes)
+            if (check(node.get_col(), node.get_row() + 1, sub_nodes)):
+                return
 
-            next_col = node.get_col()
-            next_row = node.get_row() + 1
-            check(next_col, next_row, sub_nodes)
-        
+            if (check(node.get_col(), node.get_row() - 1, sub_nodes)):
+                return
+
         if(len(sub_nodes) > 0):
             return search(sub_nodes)                    
         else:
@@ -501,13 +487,6 @@ def breadth_first_search():
     nodes = []
     nodes.append(bfs_node(initial_cell_col, initial_cell_row, None))
     search(nodes)
-
-###############################################
-# dijkstra_search()
-###############################################
-
-def dijkstra_search():
-    pass
 
 ###############################################
 # draw_cell()

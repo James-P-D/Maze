@@ -3,16 +3,16 @@
 ###############################################
 
 # Large maze
-ROWS = 150
-COLS = ROWS
-CELL_WIDTH = 6
-
-# Medium maze
-#ROWS = 80
+#ROWS = 150
 #COLS = ROWS
-#CELL_WIDTH = 10
+#CELL_WIDTH = 6
 
 # Medium maze
+ROWS = 80
+COLS = ROWS
+CELL_WIDTH = 10
+
+# Small maze
 #ROWS = 15
 #COLS = ROWS
 #CELL_WIDTH = 50
@@ -27,7 +27,7 @@ BUTTON_STRIP_HEIGHT = 50
 BUTTON_STRIP_TOP = ROWS * CELL_HEIGHT
 WINDOW_WIDTH = COLS * CELL_WIDTH
 WINDOW_HEIGHT = BUTTON_STRIP_TOP + BUTTON_STRIP_HEIGHT
-TOTAL_BUTTONS = 6
+TOTAL_BUTTONS = 5
 BUTTON_WIDTH = WINDOW_WIDTH / TOTAL_BUTTONS
 
 ###############################################
@@ -55,7 +55,6 @@ CLEAR_BUTTON_LABEL = "Clear"
 CREATE_BUTTON_LABEL = "Create"
 DFS_BUTTON_LABEL = "DFS"
 BFS_BUTTON_LABEL = "BFS"
-DIJKSTRA_BUTTON_LABEL = "Dijkstra"
 QUIT_BUTTON_LABEL = "Quit"
 
 ###############################################
