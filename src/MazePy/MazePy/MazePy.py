@@ -13,6 +13,7 @@ import numpy as np
 import random
 import time
 import os
+from nodes import dfs_node
 
 ###############################################
 # Globals
@@ -31,9 +32,11 @@ grid = np.ndarray((COLS, ROWS), np.int8)
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 clear_button = Button((BUTTON_WIDTH * 0), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, CLEAR_BUTTON_LABEL)
-create_maze_button = Button((BUTTON_WIDTH * 1), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, CREATE_MAZE_BUTTON_LABEL)
-solve_maze_button = Button((BUTTON_WIDTH * 2), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, SOLVE_MAZE_BUTTON_LABEL)
-quit_button = Button((BUTTON_WIDTH * 3), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, QUIT_BUTTON_LABEL)
+create_button = Button((BUTTON_WIDTH * 1), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, CREATE_BUTTON_LABEL)
+dfs_button = Button((BUTTON_WIDTH * 2), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, DFS_BUTTON_LABEL)
+bfs_button = Button((BUTTON_WIDTH * 3), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, BFS_BUTTON_LABEL)
+dijkstra_button = Button((BUTTON_WIDTH * 4), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, DIJKSTRA_BUTTON_LABEL)
+quit_button = Button((BUTTON_WIDTH * 5), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, QUIT_BUTTON_LABEL)
 
 ###############################################
 # initialise()
@@ -58,8 +61,10 @@ def create_ui():
     screen.fill(BLACK)
 
     clear_button.draw(screen)
-    create_maze_button.draw(screen)
-    solve_maze_button.draw(screen)
+    create_button.draw(screen)
+    dfs_button.draw(screen)
+    bfs_button.draw(screen)
+    dijkstra_button.draw(screen)
     quit_button.draw(screen)
     
     draw_grid()
@@ -138,11 +143,15 @@ def game_loop():
             elif event.type == pygame.MOUSEBUTTONUP:
                 if clear_button.is_over(mouse_x, mouse_y):
                     initialise()
-                elif create_maze_button.is_over(mouse_x, mouse_y):
+                elif create_button.is_over(mouse_x, mouse_y):
                     create_maze()
                     pass
-                elif solve_maze_button.is_over(mouse_x, mouse_y):
-                    solve_maze()
+                elif dfs_button.is_over(mouse_x, mouse_y):
+                    depth_first_search()
+                elif bfs_button.is_over(mouse_x, mouse_y):
+                    breadth_first_search()
+                elif dijkstra_button.is_over(mouse_x, mouse_y):
+                    dijkstra_search()
                 elif quit_button.is_over(mouse_x, mouse_y):
                     game_exit = True
                 elif initial_cell_dragging:
@@ -339,10 +348,32 @@ def has_vertical_empty(x, y):
     return has_vertical_neighbours(x, y, [EMPTY, INITIAL, TERMINAL])
 
 ###############################################
-# solve_maze()
+# depth_first_search()
 ###############################################
 
-def solve_maze():
+def depth_first_search():
+    node_grid = np.ndarray((COLS, ROWS), dfs_node)
+
+    def search(node):
+        print(node_grid)
+
+    initial_node = dfs_node(initial_cell_col, initial_cell_row)
+    #node_grid[initial_cell_col, initial_cell_row] = initial_node()
+
+    #search(intial_node)
+    
+###############################################
+# breadth_first_search()
+###############################################
+
+def breadth_first_search():
+    pass
+
+###############################################
+# dijkstra_search()
+###############################################
+
+def dijkstra_search():
     pass
 
 ###############################################

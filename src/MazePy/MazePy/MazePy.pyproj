@@ -24,6 +24,9 @@
     <Compile Include="constants.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="nodes.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MazePy.py" />
     <Compile Include="UIControls.py">
       <SubType>Code</SubType>
