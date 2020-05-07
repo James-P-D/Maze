@@ -8,14 +8,14 @@
 #CELL_WIDTH = 6
 
 # Medium maze
-#ROWS = 80
-#COLS = ROWS
-#CELL_WIDTH = 10
+ROWS = 80
+COLS = ROWS
+CELL_WIDTH = 10
 
 # Small maze
-ROWS = 7
-COLS = 7
-CELL_WIDTH = 100
+#ROWS = 7
+#COLS = 7
+#CELL_WIDTH = 100
 
 CELL_HEIGHT = CELL_WIDTH
 BUTTON_STRIP_HEIGHT = 50
@@ -61,14 +61,20 @@ EMPTY = 0
 WALL = 1
 INITIAL = 2  # TODO: Do we need these?
 TERMINAL = 3    # TODO: Do we need these?
+VISITED = 4
+PATH = 5
 
 INITIAL_CELL_COLOR = GREEN
 TERMINAL_CELL_COLOR = RED
 EMPTY_CELL_COLOR = WHITE
 WALL_CELL_COLOR = BLACK
+PATH_CELL_COLOR = BLUE
+VISITED_CELL_COLOR = YELLOW
 
 ###############################################
 # PyGame
 ###############################################
 
 CLOCK_TICK = 30
+SMALL_SLEEP = 0.01
+BIG_SLEEP = 0.01
