@@ -1,16 +1,19 @@
-class dfs_node():
+class bfs_node():
 
-    __left_visited = False
-    __above_visited = False
-    __right_visited = False
-    __below_visited = False
     __col = -1
     __row = -1
+    __parent = None
 
-    def __init__(self, col, row):
-        __col = col
-        __row = row
+    def __init__(self, col, row, parent):
+        self.__col = col
+        self.__row = row
+        self.__parent = parent
 
-    def has_unvisited_neighbours():
-        return __left_visited and __above_visted and __right_visited and __below_visited
+    def get_col(self):
+        return self.__col
 
+    def get_row(self):
+        return self.__row
+
+    def get_parent(self):
+        return self.__parent

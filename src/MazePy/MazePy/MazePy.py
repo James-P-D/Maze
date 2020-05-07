@@ -14,7 +14,8 @@ import numpy as np
 import random
 import time
 import os
-from nodes import dfs_node
+from nodes import bfs_node
+import sys
 
 ###############################################
 # Globals
@@ -322,6 +323,8 @@ def create_maze():
         return (vertical, horizontal)
 
     initialise()
+    draw_grid()
+
     (new_vertical, new_horizontal) = divide(0, 0, COLS, ROWS)
     make_holes(0, 0, COLS, ROWS, new_vertical, new_horizontal)
     grid[initial_cell_col, initial_cell_row] = INITIAL
@@ -374,10 +377,6 @@ def valid_cell(col, row):
 def depth_first_search():
     reset_maze()
     draw_grid()
-
-    #node_grid = np.ndarray((COLS, ROWS), dfs_node)
-    #initial_node = dfs_node(initial_cell_col, initial_cell_row)
-    #node_grid[initial_cell_col, initial_cell_row] = initial_node()
 
     def search(col, row):
         #print(f"search({col}, {row})")
@@ -438,15 +437,70 @@ def depth_first_search():
     if (valid_cell(next_col, next_row)):
         if (search(next_col, next_row)):
             return
-
-
     
 ###############################################
 # breadth_first_search()
 ###############################################
 
 def breadth_first_search():
-    pass
+    reset_maze()
+    draw_grid()
+
+    def search(nodes):
+
+        def check(next_col, next_row, sub_nodes):
+            if (valid_cell(next_col, next_row)):
+                if (grid[next_col, next_row] == TERMINAL):
+                    backtrack_node = node
+
+                    while (backtrack_node != None):
+                        if (backtrack_node.get_parent() != None):
+                            grid[backtrack_node.get_col(), backtrack_node.get_row()] = PATH
+                            draw_cell(PATH_CELL_COLOR, backtrack_node.get_col(), backtrack_node.get_row())
+                            pygame.display.update()                        
+                        backtrack_node = backtrack_node.get_parent()
+                        
+
+                    return True
+                elif ((grid[next_col, next_row] != WALL) and (grid[next_col, next_row] != VISITED) and (grid[next_col, next_row] != INITIAL)):
+                    grid[next_col, next_row] = VISITED
+                    draw_cell(VISITED_CELL_COLOR, next_col, next_row)
+                    pygame.display.update()
+                    child_node = bfs_node(next_col, next_row, node)
+                    sub_nodes.append(child_node)
+            return False
+
+        #time.sleep(SMALL_SLEEP)        
+        pygame.display.update()
+
+        sub_nodes = []
+
+        for node in nodes:
+            #print(f"\tNode at ({node.get_col()}, {node.get_row()})")
+            next_col = node.get_col() - 1
+            next_row = node.get_row()
+            check(next_col, next_row, sub_nodes)
+
+            next_col = node.get_col() + 1
+            next_row = node.get_row()
+            check(next_col, next_row, sub_nodes)
+
+            next_col = node.get_col()
+            next_row = node.get_row() - 1
+            check(next_col, next_row, sub_nodes)
+
+            next_col = node.get_col()
+            next_row = node.get_row() + 1
+            check(next_col, next_row, sub_nodes)
+        
+        if(len(sub_nodes) > 0):
+            return search(sub_nodes)                    
+        else:
+            return False
+
+    nodes = []
+    nodes.append(bfs_node(initial_cell_col, initial_cell_row, None))
+    search(nodes)
 
 ###############################################
 # dijkstra_search()
@@ -467,6 +521,9 @@ def draw_cell(color, col, row):
 ###############################################
 
 def main():
+    # Increase stack size (depth-first-search is stack intensive)
+    sys.setrecursionlimit(10 ** 6)
+
     pygame.init()
     
     initialise()

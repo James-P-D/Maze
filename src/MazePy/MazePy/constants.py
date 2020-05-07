@@ -3,16 +3,21 @@
 ###############################################
 
 # Large maze
-#ROWS = 150
-#COLS = ROWS
-#CELL_WIDTH = 6
+ROWS = 150
+COLS = ROWS
+CELL_WIDTH = 6
 
 # Medium maze
-ROWS = 80
-COLS = ROWS
-CELL_WIDTH = 10
+#ROWS = 80
+#COLS = ROWS
+#CELL_WIDTH = 10
 
-# Small maze
+# Medium maze
+#ROWS = 15
+#COLS = ROWS
+#CELL_WIDTH = 50
+
+# Tiny maze
 #ROWS = 7
 #COLS = 7
 #CELL_WIDTH = 100
@@ -77,4 +82,4 @@ VISITED_CELL_COLOR = YELLOW
 
 CLOCK_TICK = 30
 SMALL_SLEEP = 0.01
-BIG_SLEEP = 0.01
+BIG_SLEEP = 0.5
