@@ -8,14 +8,14 @@
 #CELL_WIDTH = 6
 
 # Medium maze
-ROWS = 80
-COLS = ROWS
-CELL_WIDTH = 10
+#ROWS = 80
+#COLS = ROWS
+#CELL_WIDTH = 10
 
 # Small maze
-#ROWS = 15
-#COLS = ROWS
-#CELL_WIDTH = 50
+ROWS = 40
+COLS = ROWS
+CELL_WIDTH = 20
 
 # Tiny maze
 #ROWS = 7

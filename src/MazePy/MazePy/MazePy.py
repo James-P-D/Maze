@@ -381,9 +381,10 @@ def depth_first_search():
     ###############################################
 
     def search(col, row):
-        #print(f"search({col}, {row})")
+        print(f"search({col}, {row})")
         pygame.display.update()
-        
+        #time.sleep(SMALL_SLEEP)        
+
         if (grid[col, row] == TERMINAL):
             return True
         if ((grid[col, row] == WALL) or (grid[col, row] == VISITED) or (grid[col, row] == PATH)):
@@ -436,7 +437,7 @@ def breadth_first_search():
     def search(nodes):
 
         ###############################################
-        # search()
+        # check()
         ###############################################
 
         def check(next_col, next_row, sub_nodes):
@@ -460,9 +461,9 @@ def breadth_first_search():
                     sub_nodes.append(child_node)
             return False
 
-        #time.sleep(SMALL_SLEEP)        
         pygame.display.update()
-
+        time.sleep(SMALL_SLEEP)        
+        
         sub_nodes = []
 
         for node in nodes:
