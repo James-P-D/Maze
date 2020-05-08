@@ -83,13 +83,13 @@ def draw_grid():
                 draw_cell(TERMINAL_CELL_COLOR, col, row)
             elif (grid[col, row] == WALL):
                 draw_cell(WALL_CELL_COLOR, col, row)
-            elif (grid[col, row] == EMPTY):
-                draw_cell(EMPTY_CELL_COLOR, col, row)
             elif (grid[col, row] == VISITED):
                 draw_cell(VISITED_CELL_COLOR, col, row)
             elif (grid[col, row] == PATH):
                 draw_cell(PATH_CELL_COLOR, col, row)
-    
+            else: #(grid[col, row] == EMPTY)
+                draw_cell(EMPTY_CELL_COLOR, col, row)
+            
     if (initial_cell_dragging):
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         cell_col = int(mouse_x / CELL_WIDTH)
