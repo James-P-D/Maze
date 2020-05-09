@@ -35,8 +35,8 @@ The `BFS` button will perform a [breadth first search](https://en.wikipedia.org/
 
 The program uses the following libraries:
 
-[pygame](https://www.pygame.org/) (Tested with v1.9.6)
-[numpy](https://numpy.org/) (Tested with v1.18.3)
+[pygame](https://www.pygame.org/) (Tested with v1.9.6)  
+[numpy](https://numpy.org/) (Tested with v1.18.3)  
 
 Hopefully [`pip`](https://en.wikipedia.org/wiki/Pip_(package_manager)) should do the trick...
 
