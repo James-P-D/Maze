@@ -1,11 +1,3 @@
-###############################################
-#
-# TODOs
-# - Variable renaming (newx eurgh!)
-# - Check whether we are using X and Y when we should be using Col and Row
-#
-###############################################
-
 import pygame # Tested with pygame v1.9.6
 from UIControls import Button
 from constants import *
@@ -15,6 +7,7 @@ import time
 import os
 from nodes import bfs_node
 import sys
+import threading
 
 ###############################################
 # Globals
@@ -38,11 +31,15 @@ dfs_button = Button((BUTTON_WIDTH * 2), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_S
 bfs_button = Button((BUTTON_WIDTH * 3), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, BFS_BUTTON_LABEL)
 quit_button = Button((BUTTON_WIDTH * 4), BUTTON_STRIP_TOP, BUTTON_WIDTH, BUTTON_STRIP_HEIGHT, QUIT_BUTTON_LABEL)
 
+processing = False
+
 ###############################################
 # initialise()
 ###############################################
 
 def initialise():
+    global processing
+    processing = True
     # Set all cells to EMPTY by default
     for col in range(COLS):
         for row in range(ROWS):
@@ -52,6 +49,8 @@ def initialise():
     grid[initial_cell_col, initial_cell_row] = INITIAL
     grid[terminal_cell_col, terminal_cell_row] = TERMINAL
     #print(grid)
+
+    processing = False
 
 ###############################################
 # create_ui()
@@ -123,9 +122,9 @@ def game_loop():
 
     while not game_exit:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if (event.type == pygame.QUIT) and (not processing):
                 game_exit = True;
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif (event.type == pygame.MOUSEBUTTONDOWN) and (not processing):
                 (mouse_x, mouse_y) = pygame.mouse.get_pos()
                 cell_col = int(mouse_x / CELL_WIDTH)
                 cell_row = int(mouse_y / CELL_HEIGHT)
@@ -143,15 +142,19 @@ def game_loop():
                             grid[cell_col, cell_row] = EMPTY
                         elif (grid[cell_col, cell_row] == EMPTY):
                             grid[cell_col, cell_row] = WALL
-            elif event.type == pygame.MOUSEBUTTONUP:
+            elif (event.type == pygame.MOUSEBUTTONUP) and (not processing):
                 if clear_button.is_over(mouse_x, mouse_y):
-                    initialise()
+                    thread = threading.Thread(target = initialise, args = ())
+                    thread.start()                    
                 elif create_button.is_over(mouse_x, mouse_y):
-                    create_maze()
+                    thread = threading.Thread(target = create_maze, args = ())
+                    thread.start()                    
                 elif dfs_button.is_over(mouse_x, mouse_y):
-                    depth_first_search()
+                    thread = threading.Thread(target = depth_first_search, args = ())
+                    thread.start()                    
                 elif bfs_button.is_over(mouse_x, mouse_y):
-                    breadth_first_search()
+                    thread = threading.Thread(target = breadth_first_search, args = ())
+                    thread.start()                    
                 elif quit_button.is_over(mouse_x, mouse_y):
                     game_exit = True
                 elif initial_cell_dragging:
@@ -306,6 +309,8 @@ def create_maze():
 
         return (vertical, horizontal)
 
+    global processing
+    processing = True
     initialise()
     draw_grid()
 
@@ -313,6 +318,8 @@ def create_maze():
     make_holes(0, 0, COLS, ROWS, new_vertical, new_horizontal)
     grid[initial_cell_col, initial_cell_row] = INITIAL
     grid[terminal_cell_col, terminal_cell_row] = TERMINAL
+
+    processing = False
 
 ###############################################
 # MISC FUNCTIONS
@@ -363,8 +370,6 @@ def valid_cell(col, row):
 ###############################################
 
 def depth_first_search():
-    reset_maze()
-    draw_grid()
 
     ###############################################
     # check()
@@ -410,25 +415,33 @@ def depth_first_search():
             draw_cell(VISITED_CELL_COLOR, col, row)
             return False
 
+    global processing
+    processing = True
+    reset_maze()
+    draw_grid()
+
     if (check(initial_cell_col - 1, initial_cell_row)):
+        processing = False
         return
 
     if (check(initial_cell_col + 1, initial_cell_row)):
+        processing = False
         return
 
     if (check(initial_cell_col, initial_cell_row - 1)):
+        processing = False
         return
 
     if (check(initial_cell_col, initial_cell_row + 1)):
-        return
-    
+        processing = False
+        return    
+    processing = False
+
 ###############################################
 # breadth_first_search()
 ###############################################
 
 def breadth_first_search():
-    reset_maze()
-    draw_grid()
 
     ###############################################
     # search()
@@ -485,9 +498,16 @@ def breadth_first_search():
         else:
             return False
 
+    global processing
+    processing = True
+    reset_maze()
+    draw_grid()
+
     nodes = []
     nodes.append(bfs_node(initial_cell_col, initial_cell_row, None))
     search(nodes)
+
+    processing = False
 
 ###############################################
 # draw_cell()
