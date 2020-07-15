@@ -525,6 +525,7 @@ def main():
     sys.setrecursionlimit(10 ** 6)
 
     pygame.init()
+    pygame.display.set_caption("Maze")
     
     initialise()
     create_ui()
