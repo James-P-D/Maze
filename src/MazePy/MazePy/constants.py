@@ -2,6 +2,11 @@
 # UI Component sizes
 ###############################################
 
+# Huge maze
+#ROWS = 300
+#COLS = ROWS
+#CELL_WIDTH = 3
+
 # Large maze
 #ROWS = 150
 #COLS = ROWS
