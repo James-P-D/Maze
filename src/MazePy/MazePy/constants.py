@@ -3,19 +3,19 @@
 ###############################################
 
 # Huge maze
-#ROWS = 300
-#COLS = ROWS
-#CELL_WIDTH = 3
+# ROWS = 300
+# COLS = ROWS
+# CELL_WIDTH = 3
 
 # Large maze
-#ROWS = 150
-#COLS = ROWS
-#CELL_WIDTH = 6
+# ROWS = 150
+# COLS = ROWS
+# CELL_WIDTH = 6
 
 # Medium maze
-#ROWS = 80
-#COLS = ROWS
-#CELL_WIDTH = 10
+# ROWS = 80
+# COLS = ROWS
+# CELL_WIDTH = 10
 
 # Small maze
 ROWS = 40
@@ -23,9 +23,9 @@ COLS = ROWS
 CELL_WIDTH = 20
 
 # Tiny maze
-#ROWS = 7
-#COLS = ROWS
-#CELL_WIDTH = 100
+# ROWS = 7
+# COLS = ROWS
+# CELL_WIDTH = 100
 
 CELL_HEIGHT = CELL_WIDTH
 BUTTON_STRIP_HEIGHT = 50
