@@ -3,14 +3,14 @@
 ###############################################
 
 # Huge maze
-# ROWS = 300
-# COLS = ROWS
-# CELL_WIDTH = 3
+ROWS = 250
+COLS = ROWS
+CELL_WIDTH = 3
 
 # Large maze
-# ROWS = 150
-# COLS = ROWS
-# CELL_WIDTH = 6
+#ROWS = 150
+#COLS = ROWS
+#CELL_WIDTH = 6
 
 # Medium maze
 # ROWS = 80
@@ -18,9 +18,9 @@
 # CELL_WIDTH = 10
 
 # Small maze
-ROWS = 40
-COLS = ROWS
-CELL_WIDTH = 20
+#ROWS = 40
+#COLS = ROWS
+#CELL_WIDTH = 20
 
 # Tiny maze
 # ROWS = 7
